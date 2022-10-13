@@ -23,7 +23,11 @@ class TransaksionController extends Controller
 
         $data = TransaksionHeader::with('tbltranshdr')->where('CreateBy', $startDate)->get();
 
-        return response()->json($data);
+        return response()->json([
+            'status' => 200,
+            'message' => 'success',
+            'body'    => $data
+        ]);
     }
     /**
      * Store a newly created resource in storage.
@@ -37,30 +41,35 @@ class TransaksionController extends Controller
         //     'title' => 'required|unique:posts|max:255',
         //     'body' => 'required',
         // ]);
+        try {
+            $transaksioHeader = Transaksion::create([
+                'TransCode' => $request->TransCode,
+                'TransNo'   => $request->TransNo,
+                'ItCode'    => $request->ItCode,
+                'Qty'       => $request->Qty,
+                'CreateBy'  => $request->CreateBy,
+                'CreateDt'  => $request->CreateDt,
+                'LastUpBy'  => $request->LastUpBy,
+                'LastUpDt'  => $request->LastUpDt,
+            ]);
 
-        $transaksioHeader = Transaksion::create([
-            'TransCode' => $request->TransCode,
-            'TransNo'   => $request->TransNo,
-            'ItCode'    => $request->ItCode,
-            'Qty'       => $request->Qty,
-            'CreateBy'  => $request->CreateBy,
-            'CreateDt'  => $request->CreateDt,
-            'LastUpBy'  => $request->LastUpBy,
-            'LastUpDt'  => $request->LastUpDt,
-        ]);
+            $transaksioDeatails = TransaksionHeader::create([
+                'TransCode' => $request->TransCode,
+                'TransDt'   => $request->TransDt,
+                'CashierCode'    => $request->CashierCode,
+                'PayMCode'       => $request->PayMCode,
+                'PaidAmt'       => $request->PaidAmt,
+                'ChangeAmt'       => $request->ChangeAmt,
+                'CreateBy'  => $request->CreateBy,
+                'CreateDt'  => $request->CreateDt,
+                'LastUpBy'  => $request->LastUpBy,
+                'LastUpDt'  => $request->LastUpDt,
+            ]);
+            return response()->json('success');
 
-        $transaksioDeatails = TransaksionHeader::create([
-            'TransCode' => $request->TransCode,
-            'TransDt'   => $request->TransDt,
-            'CashierCode'    => $request->CashierCode,
-            'PayMCode'       => $request->PayMCode,
-            'PaidAmt'       => $request->PaidAmt,
-            'ChangeAmt'       => $request->ChangeAmt,
-            'CreateBy'  => $request->CreateBy,
-            'CreateDt'  => $request->CreateDt,
-            'LastUpBy'  => $request->LastUpBy,
-            'LastUpDt'  => $request->LastUpDt,
-        ]);
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
 
 
     }
